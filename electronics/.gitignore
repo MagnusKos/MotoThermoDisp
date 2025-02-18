@@ -1,3 +1,4 @@
+### KiCad ###
 # For PCBs designed using KiCad: https://www.kicad.org/
 # Format documentation: https://kicad.org/help/file-formats/
 
@@ -18,6 +19,7 @@ _autosave-*
 fp-info-cache
 ~*.lck
 \#auto_saved_files#
+rescue-backup/
 
 # Netlist files (exported from Eeschema)
 *.net
@@ -29,3 +31,6 @@ fp-info-cache
 # Exported BOM files
 *.xml
 *.csv
+
+# Gerber
+out/
