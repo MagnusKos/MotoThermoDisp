@@ -3,10 +3,13 @@
 #include "Sensor.h"
 #include "Frame.h"
 
+class Frame;
+class Sensor;
+
 class DataConnector {
     public:
         DataConnector(Sensor *e, Sensor *a, Sensor *b);
-        void reconnect(Frame const *frame, float const *valuePtr);
+        void reconnect(Frame const *frame, float const * &valuePtr);
     private:
         Sensor *sensEngine_;
         Sensor *sensAir_;
