@@ -11,12 +11,11 @@ DisplayManager::DisplayManager(DISP_TYPE * const u8x8_ext, DataConnector * const
     dispSizeX_ = u8x8_->getCols();
     dispSizeY_ = u8x8_->getRows();
 
-    frameL_.setGeometry(
-        FrameGeom {
-            dispSizeX_, dispSizeY_, 0
-        }
-    );
+    FrameGeom initGeom {dispSizeX_, dispSizeY_, 0};
+
+    frameL_.setGeometry(initGeom);
     frameL_.setContent(EMPTY);
+    frameR_.setGeometry(initGeom);
     frameR_.setContent(ENGINE);
 }
 
@@ -79,6 +78,8 @@ void DisplayManager::switchLFrame() {
     else {
         shrinkFrame_(frameL_);
         moveFrame_(frameL_, TOLEFT);
+        shrinkFrame_(frameR_);
+        moveFrame_(frameR_, TORIGHT);
     }
     if (frameL_.isEmpty())      // A gentleman's rule, in case of emptying the frame
         expandFrame_(frameR_);
@@ -91,6 +92,8 @@ void DisplayManager::switchRFrame() {
     else {
         shrinkFrame_(frameR_);
         moveFrame_(frameR_, TORIGHT);
+        shrinkFrame_(frameL_);
+        moveFrame_(frameL_, TOLEFT);
     }
     if (frameR_.isEmpty())      // A gentleman's rule, in case of emptying the frame
         expandFrame_(frameL_);
