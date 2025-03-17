@@ -1,0 +1,5 @@
+#pragma once
+
+#define TIM_TRANS_GRT2IDL 3000
+#define TIM_TRANS_IDL2SNS 1000
+#define TIM_TRANS_RTG2IDL 5000
