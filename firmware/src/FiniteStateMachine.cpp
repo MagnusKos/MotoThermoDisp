@@ -38,7 +38,6 @@ namespace FiniteStateMachine {
 
         void handlerButLeft(Button2 &btn) {
             fsmBack_.trigger(BUTTON_PRESSED_LEFT);
-            //Serial.println("LButton handler!");
         }
 
         void handlerButRight(Button2 &btn) {
@@ -48,12 +47,10 @@ namespace FiniteStateMachine {
         // States' functions
 
         void onGreet() {
-            //Serial.println("Greetings!");
-            // ToDo:
+            dm_->showWarning(GREETING);
         }
 
         void onIdle() {
-            Serial.println("Idle!");
             dm_->draw();
         }
 
@@ -75,15 +72,15 @@ namespace FiniteStateMachine {
         }
 
         void onOverheat() {
-            // ToDo:
+            dm_->showWarning(OVERHEAT);
         }
 
         void onVoltageBad() {
-            // ToDo:
+            dm_->showWarning(BATT_PROBLEM);
         }
 
         void onRtg() {
-            // ToDo:
+            dm_->showWarning(RTG);
         }
     }   // End of namespace detail
 

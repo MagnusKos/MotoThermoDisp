@@ -48,7 +48,12 @@ bool Frame::isEmpty() const {
 }
 
 FrameOutputData Frame::getFrameOutputData() const {
-    String valueStr = String((valuePtr_ == nullptr) ? -42.0 : *valuePtr_, 1); // An ugly way to put a placeholder
+    String valueStr;
+    if (valuePtr_ == nullptr)
+        valueStr = "";                                 // Just show nothing, useful with warning frames
+    else
+        valueStr = String(*valuePtr_, 1);              // Get a floating point value truncated to 1 digit after a comma
+    
     valueStr += *postfix_;
     return FrameOutputData {
         *prefix_,                                       // Top line string

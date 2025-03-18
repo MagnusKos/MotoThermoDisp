@@ -20,8 +20,7 @@ class DisplayManager {
 
         void switchLFrame();
         void switchRFrame();
-        void showGreeting() {};
-        void showWarning() {};
+        void showWarning(uint8_t warningId);
 
         void draw();
         void drawDirect(const char *s);

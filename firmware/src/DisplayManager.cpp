@@ -17,6 +17,8 @@ DisplayManager::DisplayManager(DISP_TYPE * const u8x8_ext, DataConnector * const
     frameL_.setContent(EMPTY);
     frameR_.setGeometry(initGeom);
     frameR_.setContent(ENGINE);
+    frameW_.setGeometry(initGeom);
+    frameW_.setContent(GREETING);
 }
 
 void DisplayManager::drawFrame_(Frame const &frame) {
@@ -97,4 +99,11 @@ void DisplayManager::switchRFrame() {
     }
     if (frameR_.isEmpty())      // A gentleman's rule, in case of emptying the frame
         expandFrame_(frameL_);
+ }
+
+ void DisplayManager::showWarning(uint8_t warningId) {
+     if (warningId >= OVERHEAT && warningId <= GREETING) {
+         frameW_.setContent(warningId);
+         drawFrame_(frameW_);
+     }
  }
