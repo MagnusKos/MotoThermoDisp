@@ -16,32 +16,36 @@ namespace FiniteStateMachine {
         };
 
         Transition trigTransitions_[] = {
-            Transition(&states_[1], &states_[2], BUTTON_PRESSED_LEFT),
-            Transition(&states_[1], &states_[3], BUTTON_PRESSED_RIGHT),
+            Transition(&states_[1], &states_[2], TRIG_BUTTON_LEFT),
+            Transition(&states_[1], &states_[3], TRIG_BUTTON_RIGHT),
             Transition(&states_[2], &states_[1], TRIG_RETURN),
             Transition(&states_[3], &states_[1], TRIG_RETURN),
             Transition(&states_[4], &states_[1], TRIG_RETURN),
-            Transition(&states_[4], &states_[5], ISSUE_OVERHEAT),
-            Transition(&states_[4], &states_[6], ISSUE_VOLTAGE),
-            Transition(&states_[4], &states_[7], RTG),
-            Transition(&states_[5], &states_[4], BUTTON_PRESSED_LEFT),
-            Transition(&states_[5], &states_[4], BUTTON_PRESSED_RIGHT)
+            Transition(&states_[4], &states_[5], TRIG_OVERHEAT),
+            Transition(&states_[4], &states_[6], TRIG_BAD_VOLT),
+            Transition(&states_[4], &states_[7], TRIG_RTG),
+            Transition(&states_[5], &states_[1], TRIG_BUTTON_LEFT),
+            Transition(&states_[5], &states_[1], TRIG_BUTTON_RIGHT),
+            Transition(&states_[6], &states_[1], TRIG_BUTTON_LEFT),
+            Transition(&states_[6], &states_[1], TRIG_BUTTON_RIGHT)
         };
 
         TimedTransition timedTransitions_[] = {
             TimedTransition(&states_[0], &states_[1], TIM_TRANS_GRT2IDL),
             TimedTransition(&states_[1], &states_[4], TIM_TRANS_IDL2SNS),
-            TimedTransition(&states_[7], &states_[1], TIM_TRANS_RTG2IDL)
+            TimedTransition(&states_[5], &states_[1], TIM_TRANS_RTG2IDL),
+            TimedTransition(&states_[6], &states_[1], TIM_TRANS_WRN2IDL),
+            TimedTransition(&states_[7], &states_[1], TIM_TRANS_WRN2IDL)
         };
 
 // Hidden functions
 
         void handlerButLeft(Button2 &btn) {
-            fsmBack_.trigger(BUTTON_PRESSED_LEFT);
+            fsmBack_.trigger(TRIG_BUTTON_LEFT);
         }
 
         void handlerButRight(Button2 &btn) {
-            fsmBack_.trigger(BUTTON_PRESSED_RIGHT);
+            fsmBack_.trigger(TRIG_BUTTON_RIGHT);
         }
 
         // States' functions
@@ -68,7 +72,14 @@ namespace FiniteStateMachine {
             engineSens_->update();
             battSens_->update();
             airSens_->update();
-            fsmBack_.trigger(TRIG_RETURN);
+            if (!engineSens_->isInRange())
+                fsmBack_.trigger(TRIG_OVERHEAT); // Overheating is more demanding, so ignore voltage problems
+            else if (!battSens_->isInRange())
+                fsmBack_.trigger(TRIG_BAD_VOLT);
+            else if (engineSens_->isOptimalOneShot())
+                fsmBack_.trigger(TRIG_RTG);
+            else
+                fsmBack_.trigger(TRIG_RETURN);    // Just return to the idle state if everything is ok
         }
 
         void onOverheat() {
@@ -80,7 +91,7 @@ namespace FiniteStateMachine {
         }
 
         void onRtg() {
-            dm_->showWarning(RTG);
+            dm_->showWarning(TRIG_RTG);
         }
     }   // End of namespace detail
 

@@ -36,6 +36,8 @@ class Sensor {
         Sensor(SensorLimits lims, uint8_t pin);
         virtual void update();
 
+        bool isInRange() const;                 // Checks value is in a predefined range
+        bool isOptimalOneShot() const;          // Checks value reached a zone of optimality
         float getValue() const;
         float const* getValuePtr() const;       // Can provoke UB if the object destroyed, cause somewhere the pointer exists
 
@@ -43,6 +45,7 @@ class Sensor {
         //uint8_t id_;                          // Do we need this?
         uint8_t const pin_;
         float value_;
+        float valuePrev_;
         SensorLimits const lims_;
 
 };

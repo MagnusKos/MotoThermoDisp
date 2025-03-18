@@ -40,16 +40,16 @@ namespace FiniteStateMachine {
     void onRtg();
 
     const int NUM_STATES = 8;           // FSM's number of states
-    const int NUM_STATE_TRANS_TRG = 9;  // FSM's number of triggered transitions
-    const int NUM_STATE_TRANS_TIM = 3;  // FSM's number of timed transitions
+    const int NUM_STATE_TRANS_TRG = 12;  // FSM's number of triggered transitions
+    const int NUM_STATE_TRANS_TIM = 5;  // FSM's number of timed transitions
 
     enum triggers {
-        BUTTON_PRESSED_LEFT = 1,
-        BUTTON_PRESSED_RIGHT = 2,
-        ADC_POLLED = 3,
-        ISSUE_OVERHEAT = 4,
-        ISSUE_VOLTAGE = 5,
-        RTG = 6,
+        TRIG_BUTTON_LEFT = 1,
+        TRIG_BUTTON_RIGHT = 2,
+        TRIG_ADC_POLLED = 3,
+        TRIG_OVERHEAT = 4,
+        TRIG_BAD_VOLT = 5,
+        TRIG_RTG = 6,
         TRIG_RETURN = 7
     };
 

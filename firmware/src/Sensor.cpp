@@ -1,6 +1,6 @@
 #include "Sensor.h"
 
-#define GIMMICKVAL 42.0f        // Just a stupid value for the dummy sensor (base Sensor object)
+#define GIMMICKVAL 84.0f        // Just a stupid value for the dummy sensor (base Sensor object)
 #define EPSILON 0.5f            // Epsilon for float comparison
 #define RNOMTEMP 25.0f          // Nominal temperature for NTC resistor
 
@@ -14,7 +14,10 @@ Sensor::Sensor(SensorLimits lims, uint8_t pin) :
     pin_{pin},
     value_{0.0f},
     lims_{lims}
-    {}
+    {
+        valuePrev_ = lims_.limLower + EPSILON;
+        value_ = valuePrev_ + EPSILON;
+    }
 
 SensorVoltage::SensorVoltage(SensorLimits lims, uint8_t pin, PowerParams pp) :
     Sensor{lims, pin},
@@ -32,10 +35,19 @@ SensorTemperature::SensorTemperature(SensorLimits lims, uint8_t pin, NTCParams n
 /*      Base class methods      */
 
 void Sensor::update() {     // Let's just make a simple saw function
+    valuePrev_ = value_;
     if (GIMMICKVAL - value_ < EPSILON)
         value_ = 0.0f;
     else
         value_ += 0.5f;
+}
+
+bool Sensor::isInRange() const {
+    return ((value_ >= lims_.limLower) && (value_ <= lims_.limUpper));
+}
+
+bool Sensor::isOptimalOneShot() const {
+    return ((value_ >= lims_.minGood) && (valuePrev_ < lims_.minGood)); // A very simple method
 }
 
 float Sensor::getValue() const {
@@ -55,5 +67,5 @@ void SensorTemperature::update() {
 
 void SensorVoltage::update() {
     Sensor::update(); // ToDo: voltage calculation
-
 }
+

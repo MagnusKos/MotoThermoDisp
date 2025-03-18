@@ -104,6 +104,7 @@ void DisplayManager::switchRFrame() {
  void DisplayManager::showWarning(uint8_t warningId) {
      if (warningId >= OVERHEAT && warningId <= GREETING) {
          frameW_.setContent(warningId);
+         u8x8_->clearDisplay();
          drawFrame_(frameW_);
      }
  }
