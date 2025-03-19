@@ -9,9 +9,9 @@
 
 DataConnector *dc;
 
-Sensor *airSens;
-Sensor *engineSens;
-Sensor *battSens;
+Sensor *sensAir;
+Sensor *sensEngine;
+Sensor *sensBatt;
 
 Button2 *butLeft;
 Button2 *butRight;
@@ -25,20 +25,20 @@ void setup() {
   u8x8Disp = new DISP_TYPE(U8X8_PIN_NONE, I2C_SDC_PIN, I2C_SDA_PIN);
   u8x8Disp->begin();
 
-  airSens = new Sensor(
-    SensorLimits{-10.0f, 100.0f, 75.0f}, ADC_AIR_PIN);
-  engineSens = new Sensor(
-    SensorLimits{-10.0f, 100.0f, 75.0f}, ADC_ENGINE_PIN);
-  battSens = new Sensor(
-    SensorLimits{-10.0f, 100.0f, 75.0f}, ADC_BATT_PIN);
+  sensAir = new Sensor(
+    SensorLimits{AIR_TC, AIR_OH, AIR_OK}, ADC_AIR_PIN);
+  sensEngine = new Sensor(
+    SensorLimits{ENGINE_TC, ENGINE_OH, ENGINE_RTG}, ADC_ENGINE_PIN);
+  sensBatt = new Sensor(
+    SensorLimits{BATT_UV, BATT_OV, BATT_OK}, ADC_BATT_PIN); 
 
   butLeft = new Button2(BUT_LEFT_PIN, INPUT);
   butRight = new Button2(BUT_RIGHT_PIN, INPUT);
 
-  dc = new DataConnector(engineSens, airSens, battSens);
+  dc = new DataConnector(sensEngine, sensAir, sensBatt);
   dm = new DisplayManager(u8x8Disp, dc);
 
-  FiniteStateMachine::initFSM(airSens, engineSens, battSens, butLeft, butRight, dm);
+  FiniteStateMachine::initFSM(sensAir, sensEngine, sensBatt, butLeft, butRight, dm);
 }
 
 
