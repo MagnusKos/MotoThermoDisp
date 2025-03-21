@@ -1,11 +1,14 @@
 #include "Sensor.h"
+#include <math.h>
 
 #define GIMMICKVAL 84.0f        // Just a stupid value for the dummy sensor (base Sensor object)
-#define EPSILON 0.5f            // Epsilon for float comparison
+#define EPSILON 0.1f            // Epsilon for float comparison
 #define RNOMTEMP 25.0f          // Nominal temperature for NTC resistor
 
 #define AVGPROBESNUM 5          // Probes numbers for sensor averaging
 #define AVGDELAY 10             // Delay between probes
+#define ADCRES 1023             // ADC resolution. 2^bits - 1
+#define ADCVOLT 3.3f
 
 
 /*      Constructors        */
@@ -36,18 +39,20 @@ SensorTemperature::SensorTemperature(SensorLimits lims, uint8_t pin, NTCParams n
 
 void Sensor::update() {     // Let's just make a simple saw function
     valuePrev_ = value_;
-    if (GIMMICKVAL - value_ < EPSILON)
+    if (fabs(GIMMICKVAL - value_) < EPSILON)
         value_ = 0.0f;
     else
         value_ += 0.5f;
 }
 
 bool Sensor::isInRange() const {
-    return ((value_ >= lims_.limLower) && (value_ <= lims_.limUpper));
+    return ((fabs(value_ - lims_.limLower) > EPSILON) &&
+     (fabs(value_ - lims_.limUpper) < EPSILON));
 }
 
 bool Sensor::isOptimalOneShot() const {
-    return ((value_ >= lims_.minGood) && (valuePrev_ < lims_.minGood)); // A very simple method
+    return ((fabs(value_ - lims_.minGood) > EPSILON ) &&
+     (fabs(valuePrev_ - lims_.minGood) < EPSILON)); // A very simple method
 }
 
 float Sensor::getValue() const {
@@ -66,6 +71,13 @@ void SensorTemperature::update() {
 }
 
 void SensorVoltage::update() {
-    Sensor::update(); // ToDo: voltage calculation
+    int valueSumRaw = 0;
+    for (uint8_t i=0; i<AVGPROBESNUM; i+=1) {
+        valueSumRaw += analogRead(pin_);
+        delay(AVGDELAY);
+    }
+    value_ = (valueSumRaw / AVGPROBESNUM) * (ADCVOLT / ADCRES) *
+     BATT_DIV + BATT_ADD;
+    
 }
 

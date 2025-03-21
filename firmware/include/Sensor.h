@@ -51,16 +51,16 @@ class Sensor {
 };
 
 
-class SensorVoltage : Sensor {
+class SensorVoltage : public Sensor {
     public:
         SensorVoltage(SensorLimits lims, uint8_t pin, PowerParams pp);
-        void update() override; // ToDo: voltage calculation
+        void update() override;
     private:
         PowerParams const pp_;
 };
 
 
-class SensorTemperature : Sensor {
+class SensorTemperature : public Sensor {
     public:
         SensorTemperature(SensorLimits lims, uint8_t pin, NTCParams np);
         void update() override;
