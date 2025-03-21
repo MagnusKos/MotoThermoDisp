@@ -51,7 +51,9 @@ namespace FiniteStateMachine {
         // States' functions
 
         void onGreet() {
-            dm_->showWarning(GREETING);
+            #ifdef WARN_EN_GREET
+                dm_->showWarning(GREETING);
+            #endif
         }
 
         void onIdle() {
@@ -72,26 +74,43 @@ namespace FiniteStateMachine {
             engineSens_->update();
             battSens_->update();
             airSens_->update();
-            if (!engineSens_->isInRange())
-                fsmBack_.trigger(TRIG_OVERHEAT); // Overheating is more demanding, so ignore voltage problems
-            else if (!battSens_->isInRange())
-                fsmBack_.trigger(TRIG_BAD_VOLT);
-            else if (engineSens_->isOptimalOneShot())
-                fsmBack_.trigger(TRIG_RTG);
-            else
-                fsmBack_.trigger(TRIG_RETURN);    // Just return to the idle state if everything is ok
+            #ifdef WARN_EN_OVERHEAT
+                if (!(engineSens_->isInRange())) {
+                    fsmBack_.trigger(TRIG_OVERHEAT); // Overheating is more demanding, so ignore voltage problems
+                }
+                else 
+            #endif
+            #ifdef WARN_EN_BADVOLT
+                if (!(battSens_->isInRange())) {
+                    fsmBack_.trigger(TRIG_BAD_VOLT);
+                }
+                else
+            #endif
+            #ifdef WARN_EN_RTG
+                if (engineSens_->isOptimalOneShot()) {
+                    fsmBack_.trigger(TRIG_RTG);
+                }
+                else
+            #endif
+                    fsmBack_.trigger(TRIG_RETURN);    // Just return to the idle state if everything is ok
         }
 
         void onOverheat() {
-            dm_->showWarning(OVERHEAT);
+            #ifdef WARN_EN_OVERHEAT
+                dm_->showWarning(OVERHEAT);
+            #endif
         }
 
         void onVoltageBad() {
-            dm_->showWarning(BATT_PROBLEM);
+            #ifdef WARN_EN_BADVOLT
+                dm_->showWarning(BATT_PROBLEM);
+            #endif
         }
 
         void onRtg() {
-            dm_->showWarning(TRIG_RTG);
+            #ifdef WARN_EN_RTG
+                dm_->showWarning(TRIG_RTG);
+            #endif
         }
     }   // End of namespace detail
 
