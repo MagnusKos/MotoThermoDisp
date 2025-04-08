@@ -14,7 +14,7 @@ const String framePrefix[] = {
     "OVERHEAT",
     "BATTERY",
     "READY!",
-    "M1NSK"
+    MSG_GREET
 };
 
 const String framePostfix[] = {
